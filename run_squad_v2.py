@@ -114,7 +114,7 @@ def read_squad_examples(input_file, is_training, version_2_with_negative):
             return True
         return False
 
-    for entry in input_data:
+    for entry in tqdm.tqdm(input_data):
         for paragraph in entry["paragraphs"]:
             paragraph_text = paragraph["context"]
             doc_tokens = []
