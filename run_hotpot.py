@@ -18,12 +18,14 @@ def create_para_dict(example_dicts):
     return {"paragraphs": example_dicts}
 
 
-def convert_hotpot_to_squad_format(json_dict):
+def convert_hotpot_to_squad_format(json_dict, gold_paras_only=True):
     new_dict = {"data": []}
     count = 0
     for example in json_dict:
-        support = {lst[0]: lst[1] for lst in example["supporting_facts"]}
-        context_paras = [lst for lst in example["context"] if lst[0] in support]
+        context_paras = example["context"]
+        if gold_paras_only:
+            support = {lst[0]: lst[1] for lst in example["supporting_facts"]}
+            context_paras = [lst for lst in example["context"] if lst[0] in support]
         context_joined = " ".join(["".join(lst[1]) for lst in context_paras])
         # Allow model to explicitly select yes/no from text (location front, avoid truncation)
         context_joined = " ".join(["yes", "no", context_joined])
