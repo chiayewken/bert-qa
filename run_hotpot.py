@@ -25,7 +25,8 @@ def convert_hotpot_to_squad_format(json_dict):
         support = {lst[0]: lst[1] for lst in example["supporting_facts"]}
         context_paras = [lst for lst in example["context"] if lst[0] in support]
         context_joined = " ".join(["".join(lst[1]) for lst in context_paras])
-        context_joined = " ".join([context_joined, "yes", "no"])
+        # Allow model to explicitly select yes/no from text (location front, avoid truncation)
+        context_joined = " ".join(["yes", "no", context_joined])
         answer = example["answer"]
         answer_start = context_joined.index(answer)
 
