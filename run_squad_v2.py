@@ -806,6 +806,9 @@ def write_predictions(
                 orig_text = " ".join(orig_tokens)
 
                 final_text = get_final_text(tok_text, orig_text, do_lower_case)
+                if final_text == orig_text:
+                    tf.logging.info("Error! tok_text: {}, orig_tokens: {}".format(tok_text, orig_tokens))
+
                 if final_text in seen_predictions:
                     continue
 
@@ -935,11 +938,11 @@ def get_final_text(pred_text, orig_text, do_lower_case, verbose_logging=True):
 
     start_position = tok_text.find(pred_text)
     if start_position == -1:
-        if verbose_logging:
-            tf.logging.info(
-                "Unable to find text: '%s' in '%s'" % (pred_text, orig_text)
-            )
-            tf.logging.info("tok_text: {}".format(repr(tok_text)))
+        # if verbose_logging:
+        #     tf.logging.info(
+        #         "Unable to find text: '%s' in '%s'" % (pred_text, orig_text)
+        #     )
+        #     tf.logging.info("tok_text: {}".format(repr(tok_text)))
         return orig_text
     end_position = start_position + len(pred_text) - 1
 
