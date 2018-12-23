@@ -810,6 +810,7 @@ def write_predictions(
                     tf.logging.info("Error! tok_text: {}, orig_tokens: {}".format(tok_text, orig_tokens))
                     tf.logging.info(str((orig_doc_start, orig_doc_end)))
                     tf.logging.info(str(example.doc_tokens))
+                    return None
 
                 if final_text in seen_predictions:
                     continue
