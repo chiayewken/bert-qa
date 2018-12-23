@@ -806,7 +806,7 @@ def write_predictions(
                 orig_text = " ".join(orig_tokens)
 
                 final_text = get_final_text(tok_text, orig_text, do_lower_case)
-                if final_text == orig_text:
+                if final_text == "error not found":
                     tf.logging.info("Error! tok_text: {}, orig_tokens: {}".format(tok_text, orig_tokens))
 
                 if final_text in seen_predictions:
@@ -943,7 +943,7 @@ def get_final_text(pred_text, orig_text, do_lower_case, verbose_logging=True):
         #         "Unable to find text: '%s' in '%s'" % (pred_text, orig_text)
         #     )
         #     tf.logging.info("tok_text: {}".format(repr(tok_text)))
-        return orig_text
+        return "error not found"  # orig_text
     end_position = start_position + len(pred_text) - 1
 
     (orig_ns_text, orig_ns_to_s_map) = _strip_spaces(orig_text)
