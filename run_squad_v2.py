@@ -808,6 +808,8 @@ def write_predictions(
                 final_text = get_final_text(tok_text, orig_text, do_lower_case)
                 if final_text == "error not found":
                     tf.logging.info("Error! tok_text: {}, orig_tokens: {}".format(tok_text, orig_tokens))
+                    tf.logging.info(str((orig_doc_start, orig_doc_end)))
+                    tf.logging.info(str(example.doc_tokens))
 
                 if final_text in seen_predictions:
                     continue
