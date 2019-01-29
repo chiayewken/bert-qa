@@ -793,8 +793,6 @@ def write_predictions(
                 tok_tokens = feature.tokens[pred.start_index : (pred.end_index + 1)]
                 orig_doc_start = feature.token_to_orig_map[pred.start_index]
                 orig_doc_end = feature.token_to_orig_map[pred.end_index]
-                if orig_doc_end <= orig_doc_start:
-                    orig_doc_end = orig_doc_start + 1  # Ensure at least a word
                 orig_tokens = example.doc_tokens[orig_doc_start : (orig_doc_end + 1)]
                 tok_text = " ".join(tok_tokens)
 
