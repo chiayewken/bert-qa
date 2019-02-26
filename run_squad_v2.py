@@ -390,6 +390,7 @@ def convert_examples_to_features(
 
             unique_id += 1
             example_index += 1
+    return example_index
 
 
 def _improve_answer_span(
