@@ -1,3 +1,6 @@
+import tqdm
+
+
 def create_example_dict(context, answer_start, answer, id, is_impossible, question):
     return {
         "context": context,
@@ -90,4 +93,43 @@ def convert_hotpot_to_squad_format_classify_support(json_dict):
                 )
             )
             count += 1
+    return new_dict
+
+
+def convert_hotpot_to_squad_format_classify_support_double(json_dict):
+    # Not training model to find answer, but just to "classify" support-ness
+    new_dict = {"data": []}
+    count = 0
+    for example in tqdm.tqdm(json_dict):
+        support = {
+            para_title: line_num for para_title, line_num in example["supporting_facts"]
+        }
+
+        n_context_paras = len(example["context"])
+        for i in range(n_context_paras):
+            para_title_i, para_lines_i = example["context"][i]
+            if para_title_i in support:
+                for j in range(n_context_paras):
+                    if i != j:
+                        para_title_j, para_lines_j = example["context"][j]
+                        answer = {True: "yes", False: "no"}[para_title_j in support]
+                        combined = " ".join(para_lines_i) + " " + " ".join(para_lines_j)
+                        context = add_yes_no(combined)
+                        answer_start = context.index(answer)
+
+                        new_dict["data"].append(
+                            create_para_dict(
+                                create_example_dict(
+                                    context=context,
+                                    answer_start=answer_start,
+                                    answer=answer,
+                                    id=str(
+                                        count
+                                    ),  # SquadExample.__repr__ only accepts type==str
+                                    is_impossible=(answer_start == -1),
+                                    question=example["question"],
+                                )
+                            )
+                        )
+                        count += 1
     return new_dict
