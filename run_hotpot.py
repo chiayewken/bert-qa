@@ -24,13 +24,16 @@ def convert_hotpot_to_squad_format(json_dict, gold_paras_only=True):
     for example in json_dict:
         context_paras = example["context"]
         if gold_paras_only:
-            support = {lst[0]: lst[1] for lst in example["supporting_facts"]}
+            support = {
+                para_title: line_num
+                for para_title, line_num in example["supporting_facts"]
+            }
             context_paras = [lst for lst in example["context"] if lst[0] in support]
         context_joined = " ".join(["".join(lst[1]) for lst in context_paras])
         # Allow model to explicitly select yes/no from text (location front, avoid truncation)
         context_joined = " ".join(["yes", "no", context_joined])
         answer = example["answer"]
-        answer_start = context_joined.index(answer)
+        answer_start = context_joined.index(answer) if answer in context_joined else -1
 
         new_dict["data"].append(
             create_para_dict(
@@ -39,7 +42,7 @@ def convert_hotpot_to_squad_format(json_dict, gold_paras_only=True):
                     answer_start=answer_start,
                     answer=answer,
                     id=str(count),  # SquadExample.__repr__ only accepts type==str
-                    is_impossible=False,
+                    is_impossible=(answer_start == -1),
                     question=example["question"],
                 )
             )
