@@ -100,7 +100,7 @@ def convert_hotpot_to_squad_format_classify_support_double(json_dict):
     # Not training model to find answer, but just to "classify" support-ness
     new_dict = {"data": []}
     count = 0
-    for example in tqdm.tqdm(json_dict):
+    for example in json_dict:
         support = {
             para_title: line_num for para_title, line_num in example["supporting_facts"]
         }
@@ -109,7 +109,7 @@ def convert_hotpot_to_squad_format_classify_support_double(json_dict):
         for i in range(n_context_paras):
             para_title_i, para_lines_i = example["context"][i]
             if para_title_i in support:
-                for j in range(n_context_paras):
+                for j in tqdm.tqdm(range(n_context_paras)):
                     if i != j:
                         para_title_j, para_lines_j = example["context"][j]
                         answer = {True: "yes", False: "no"}[para_title_j in support]
